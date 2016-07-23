@@ -10,6 +10,12 @@ void UTankBarrel::Elevate(float RelativeSpeed)
 
 
 	// Give a max elevation speed, and the frame time
-	UE_LOG(LogTemp, Warning, TEXT("Barrel-Elevate() called at speed %f"), RelativeSpeed);
+	RelativeSpeed = FMath::Clamp<float>(RelativeSpeed, -1.0f, 1.0f);
+	auto ElevationChange = RelativeSpeed * MaxDegreesPerSecond * GetWorld()->DeltaTimeSeconds;
+	auto RawNewElevation = RelativeRotation.Pitch + ElevationChange;
+	auto ClampedElevation = FMath::Clamp<float>(RawNewElevation, MinElevationDegrees, MaxElevationDegrees);
+
+
+	SetRelativeRotation(FRotator(ClampedElevation, 0, 0));
 }
 
